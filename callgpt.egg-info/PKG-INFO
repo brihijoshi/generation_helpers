@@ -1,10 +1,11 @@
 Metadata-Version: 2.1
 Name: callgpt
-Version: 0.2
+Version: 0.3
 Summary: Library for running few-shot inference on GPT models
 License: Apache License 2.0
 License-File: LICENSE
 Requires-Dist: openai==1.12.0
+Requires-Dist: llama-cpp-python
 
 # Generation Helpers
 Helper functions for text generation for my research projects. README coming!
