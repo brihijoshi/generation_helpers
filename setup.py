@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(name='callgpt',
       version='0.2',
       description="Library for running few-shot inference on GPT models",
-      packages=["gptinference"],
+      packages=["gptinference", "gptinference.wrappers"],
       install_requires=[
           'openai==1.12.0'
       ],

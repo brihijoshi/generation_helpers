@@ -27,9 +27,9 @@ def cost_in_dollars(num_input_tokens: int, num_output_tokens: int, engine: str) 
         raise ValueError(f"Pricing unavailable for requested engine: {engine}")
     
 class LLamaCppHelper:
-    def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600):
+    def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600, n_ctx: int=512):
             self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
-            self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True)
+            self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True,n_ctx=n_ctx)
             self.repo_id = repo_id
             
     def call(self, prompt, engine, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):

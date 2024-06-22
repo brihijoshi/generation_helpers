@@ -11,5 +11,7 @@ gptinference/base_prompt.py
 gptinference/caching.py
 gptinference/helper.py
 gptinference/utils.py
+gptinference/wrappers/__init__.py
+gptinference/wrappers/huggingface_generator.py
 gptinference/wrappers/llama_cpp_generator.py
 gptinference/wrappers/openai_api_generator.py
