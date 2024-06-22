@@ -29,7 +29,7 @@ def cost_in_dollars(num_input_tokens: int, num_output_tokens: int, engine: str) 
 class LLamaCppHelper:
     def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600):
             self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
-            self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True, logits_all=True)
+            self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True)
             self.repo_id = repo_id
             # TODO: need to setup model here
 
@@ -51,7 +51,7 @@ class LLamaCppHelper:
                                                 temperature=temperature,
                                                 logprobs=logprobs)
             cache_val = self.cache.set(key=cache_key, value=OpenAICacheValue(
-                first_response=str(LlamaCppWrapper.get_first_response(response=val_dict, engine=self.repo_id))
+                first_response=str(LlamaCppWrapper.get_first_response(response=val_dict))
             ))
 
         return cache_val.first_response

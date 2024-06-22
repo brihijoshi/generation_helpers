@@ -30,16 +30,18 @@ class LlamaCppWrapper:
         conversational_content = [{"role": "user", "content": prompt[0]}] if isinstance(prompt, List) and isinstance(prompt[0], str) \
                     else ([{"role": "user", "content": prompt}] if isinstance(prompt, str) \
                     else prompt)
+        pdb.set_trace()
         response = engine.create_chat_completion(
             messages=conversational_content,
             temperature=temperature,
             max_tokens=max_tokens,
             logprobs=logprobs,
+            top_logprobs=1
         )
         return response
 
     @staticmethod
-    def get_first_response(response, engine) -> Dict[str, Any]:
+    def get_first_response(response) -> Dict[str, Any]:
         """Returns the first response from the list of responses.
         Sample response:
         {
@@ -65,7 +67,7 @@ class LlamaCppWrapper:
         }
         }
         """
-        # pdb.set_trace()
+        pdb.set_trace()
         # if is_chat_based_agent(engine):
         text = response['choices'][0]['message']['content']
         # else:
