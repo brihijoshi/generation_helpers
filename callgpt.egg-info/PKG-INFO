@@ -6,4 +6,6 @@ License: Apache License 2.0
 License-File: LICENSE
 Requires-Dist: openai==1.12.0
 
-# callgpt
+# Generation Helpers
+Helper functions for text generation for my research projects. README coming!
+Extending generation helper functions. Special thanks to base development done by Niket Tandon at - https://github.com/nikett/callgpt

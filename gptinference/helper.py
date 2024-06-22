@@ -1,7 +1,7 @@
 from typing import List
 
-from gptinference.wrappers.openai_api import OpenaiAPIWrapper
-from gptinference.wrappers.llama_cpp import LlamaCppWrapper
+from gptinference.wrappers.openai_api_generator import OpenaiAPIWrapper
+from gptinference.wrappers.llama_cpp_generator import LlamaCppWrapper
 from gptinference.utils import newline, shorten
 from gptinference.caching import Caching, OpenAICacheKey, OpenAICacheValue
 from llama_cpp import Llama
@@ -31,14 +31,13 @@ class LLamaCppHelper:
             self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
             self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True)
             self.repo_id = repo_id
-            # TODO: need to setup model here
-
-    def call(self, prompt, max_tokens=300, temperature=0.0, logprobs=False):
+            
+    def call(self, prompt, engine, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
         if not prompt:
             return ""
         cache_key = OpenAICacheKey(engine=self.repo_id,
                                     prompt=str(prompt).lstrip(), # don't store new lines in the beginning.
-                                    stop_token=None,
+                                    stop_token=stop_token,
                                     temperature=temperature,
                                     max_tokens=max_tokens)
         cache_val = self.cache.get(key=cache_key)
@@ -91,7 +90,7 @@ class OpenAIHelper:
         def __init__(self, cache_path:str=None, save_every_n_seconds: int=600):
             self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
 
-        def call(self, prompt, engine, max_tokens=300, stop_token="###", temperature=0.0, cost_estimator_info_to_fill: Dict=None):
+        def call(self, prompt, engine, max_tokens=300, stop_token="###", temperature=0.0, cost_estimator_info_to_fill: Dict=None, logprobs=None):
             if not prompt:
                 return ""
             cache_key = OpenAICacheKey(engine=engine,

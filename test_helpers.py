@@ -1,4 +1,4 @@
-from gptinference.openai_wrapper import LLamaCppHelper
+from gptinference.helper import LLamaCppHelper
 
 helper = LLamaCppHelper(repo_id="Qwen/Qwen2-0.5B-Instruct-GGUF",filename="*q8_0.gguf",cache_path="cache.jsonl")
 

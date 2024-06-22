@@ -1,5 +1,5 @@
 from gptinference.base_prompt import Prompt
-from gptinference.openai_wrapper import OpenAIHelper, LLamaCppHelper
+from gptinference.helper import OpenAIHelper, LLamaCppHelper
 
 from typing import Dict, List 
 
