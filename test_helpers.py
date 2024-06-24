@@ -1,6 +1,9 @@
 from gptinference.helper import LLamaCppHelper
+from gptinference.helper import HuggingFaceGeneratorHelper
 
-helper = LLamaCppHelper(repo_id="Qwen/Qwen2-0.5B-Instruct-GGUF",filename="*q8_0.gguf",cache_path="cache.jsonl")
+helper = HuggingFaceGeneratorHelper(model="microsoft/Phi-3-mini-4k-instruct", cache_path='cache.jsonl', device='cpu')
+
+# helper = LLamaCppHelper(repo_id="Qwen/Qwen2-0.5B-Instruct-GGUF",filename="*q8_0.gguf",cache_path="cache.jsonl")
 
 messages=[
     {
@@ -13,4 +16,4 @@ messages=[
     }
 ]
 
-helper.call(prompt=messages,logprobs=True)
+helper.call(prompt=messages)
