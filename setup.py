@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages, find_namespace_packages
 
 setup(name='callgpt',
-    version='0.3',
+    version='0.6',
     description="Library for running few-shot inference on GPT models",
     packages=find_packages(),
     # packages=find_namespace_packages(include=["gptinference", "gptinference.wrappers", "gptinference.*"]),

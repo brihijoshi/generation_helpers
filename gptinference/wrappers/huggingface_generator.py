@@ -24,16 +24,16 @@ class HuggingFaceGeneratorWrapper:
 
         response = generator(prompt,
                             max_new_tokens=max_tokens,
-                            temperature=temperature)
-        
+                            temperature=temperature,
+                            return_full_text=False)        
         return response
 
     @staticmethod
     def get_first_response(response) -> Dict[str, Any]:
         # pdb.set_trace()
         # if is_chat_based_agent(engine):
-        assert response[0]['generated_text'][-1]['role'] == 'assistant'
-        text = response[0]['generated_text'][-1]['content']
+        # assert response[0]['generated_text'][-1]['role'] == 'assistant'
+        text = response[0]['generated_text']
         # else:
         #     text = response["choices"][0]["text"]
         return text

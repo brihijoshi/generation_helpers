@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: callgpt
-Version: 0.3
+Version: 0.6
 Summary: Library for running few-shot inference on GPT models
 License: Apache License 2.0
 License-File: LICENSE

@@ -34,7 +34,7 @@ class HuggingFaceGeneratorHelper:
         self.generator = pipeline(model=model, device=device)
         self.model_name = model
             
-    def call(self, prompt, max_tokens=300, temperature=0.0):
+    def call(self, prompt, engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
         if not prompt:
             return ""
         cache_key = OpenAICacheKey(engine=self.model_name,
@@ -80,7 +80,6 @@ class LLamaCppHelper:
                                     max_tokens=max_tokens)
         cache_val = self.cache.get(key=cache_key)
         if not cache_val:
-            # print(f"\nCalling GPT3: {shorten(prompt, max_words=10)}...")
             val_dict = LlamaCppWrapper.call(prompt=prompt,
                                                 engine=self.model,
                                                 max_tokens=max_tokens,
