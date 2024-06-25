@@ -55,6 +55,14 @@ class HuggingFaceGeneratorHelper:
             ))
 
         return cache_val.first_response
+    
+    def call_sample(self, prompt, engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
+        val_dict = HuggingFaceGeneratorWrapper.call(prompt=prompt,
+                                            generator=self.generator,
+                                            max_tokens=max_tokens,
+                                            # stop_token=stop_token,
+                                            temperature=temperature)
+        return str(HuggingFaceGeneratorWrapper.get_first_response(response=val_dict))
 
     def mk_cache_key(self, prompt: str, max_tokens=300, temperature=0.0) -> str:
         cache_key = OpenAICacheKey(engine=self.model_name,

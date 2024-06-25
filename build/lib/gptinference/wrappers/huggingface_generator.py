@@ -22,10 +22,20 @@ class HuggingFaceGeneratorWrapper:
 
         # pass through generator
 
+        # pdb.set_trace()
+
+        do_sample = False
+        if temperature > 0:
+            do_sample=True
+
+        print("..........................................................", do_sample)
+
         response = generator(prompt,
                             max_new_tokens=max_tokens,
                             temperature=temperature,
-                            return_full_text=False)        
+                            return_full_text=False,
+                            do_sample=do_sample) 
+
         return response
 
     @staticmethod
