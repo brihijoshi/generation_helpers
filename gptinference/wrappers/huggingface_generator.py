@@ -14,7 +14,7 @@ class HuggingFaceGeneratorWrapper:
         max_tokens: int,
         temperature: float,
         generator: pipeline,
-        device: str = "cpu",
+        num_return_sequences: int=1,
     ) -> dict:
             
         if isinstance(prompt, List):
@@ -28,7 +28,7 @@ class HuggingFaceGeneratorWrapper:
         if temperature > 0:
             do_sample=True
 
-        print("..........................................................", do_sample)
+        # print("..........................................................", do_sample)
 
         # This can actually handle the batched input on its own!!
 
@@ -36,7 +36,8 @@ class HuggingFaceGeneratorWrapper:
                             max_new_tokens=max_tokens,
                             temperature=temperature,
                             return_full_text=False,
-                            do_sample=do_sample) 
+                            do_sample=do_sample,
+                            num_return_sequences=num_return_sequences) 
         
 
         # breakpoint()
@@ -57,14 +58,8 @@ class HuggingFaceGeneratorWrapper:
     def get_first_response_batched(response) -> List[Dict[str, Any]]:
         """Returns the first response from the list of responses."""
 
-        # breakpoint()
-
-        for r in response:
-            yield r[0]['generated_text']
-
-        # if is_chat_based_agent(engine):
-        #     for r in response["choices"]:
-        #         yield r.message.content
-        # else:
-        #     for r in response["choices"]:
-        #         yield r["text"]
+        for res in response:
+            if type(res)!=dict:
+                yield res[0]['generated_text']
+            else:
+                yield res['generated_text']

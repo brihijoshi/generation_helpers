@@ -77,7 +77,7 @@ class HuggingFaceGeneratorHelper:
                                 max_tokens=max_tokens)
         return cache_key
     
-    def call_batch(self, prompts: List[str], engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False, cache_result=True):
+    def call_batch(self, prompts: List[str], engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False, cache_result=True, num_return_sequences=1):
 
         if cache_result:
 
@@ -111,9 +111,11 @@ class HuggingFaceGeneratorHelper:
                                                         generator=self.generator,
                                                         max_tokens=max_tokens, 
                                                         # stop_token=stop_token,
-                                                        temperature=temperature)
-            
+                                                        temperature=temperature,
+                                                        num_return_sequences=num_return_sequences)
             returned_responses = []
+            if len(batched_response) == 1:
+                batched_response = batched_response[0]
             for completion in HuggingFaceGeneratorWrapper.get_first_response_batched(response=batched_response):
                 returned_responses.append(completion)
             

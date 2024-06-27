@@ -15,17 +15,7 @@ messages=[
       "role": "user",
       "content": "Tell me fun things to do in San Francisco.",
     }
-    ],
-    [
-    {
-      "role": "system",
-      "content": "You are an expert travel guide.",
-    },
-    {
-      "role": "user",
-      "content": "Tell me fun things to do in San Francisco.",
-    }
     ]
 ]
 
-print(helper.call_batch(prompts=messages, temperature=1.0, cache_result=False))
+print(helper.call_batch(prompts=messages, temperature=1.0, cache_result=False, num_return_sequences=3))
