@@ -65,12 +65,60 @@ class HuggingFaceGeneratorHelper:
         return str(HuggingFaceGeneratorWrapper.get_first_response(response=val_dict))
 
     def mk_cache_key(self, prompt: str, max_tokens=300, temperature=0.0) -> str:
+        if type(prompt) == str:
+            prompt = prompt.lstrip()
+        else:
+            # breakpoint()
+            prompt=str(prompt)
         cache_key = OpenAICacheKey(engine=self.model_name,
-                                prompt=prompt.lstrip(), # don't store new lines in the beginning.
+                                prompt=prompt, # don't store new lines in the beginning.
                                 stop_token="None",
                                 temperature=temperature,
                                 max_tokens=max_tokens)
         return cache_key
+    
+    def call_batch(self, prompts: List[str], engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False, cache_result=True):
+
+        if cache_result:
+
+            # Only running batched prompts which are not currently cached
+            cache_keys = [self.mk_cache_key(prompt=prompt,temperature=temperature, max_tokens=max_tokens)  for prompt in prompts]
+            str_prompt = {str(prompt):prompt for prompt in prompts}
+            # breakpoint()
+            precached_entries = {str(prompt): self.cache.get(key=cache_key) for cache_key, prompt in zip(cache_keys, prompts)}
+            uncached_prompts   = [str_prompt[prompt] for prompt, cached_entry in precached_entries.items() if not cached_entry]
+
+            # print(f"\nCalling GPT3 as a batch for ({len(uncached_prompts)}/ {len(precached_entries)}) "
+            #       f"prompts: {(newline+newline).join([shorten(p, max_words=10)+ '...' for p in uncached_prompts])}")
+
+            batched_response = HuggingFaceGeneratorWrapper.call(prompt=uncached_prompts,
+                                                        generator=self.generator,
+                                                        max_tokens=max_tokens, 
+                                                        # stop_token=stop_token,
+                                                        temperature=temperature)
+
+            for prompt, completion in zip(uncached_prompts, HuggingFaceGeneratorWrapper.get_first_response_batched(response=batched_response)):
+                value = OpenAICacheValue(first_response= completion.strip())
+                precached_entries[prompt] = value
+                cache_key = self.mk_cache_key(prompt=prompt, temperature=temperature, max_tokens=max_tokens) # TODO: might give an error here hehe
+                self.cache.set(key=cache_key, value=value)
+
+            return [p.first_response for _, p in precached_entries.items()]
+        
+        else:
+
+            batched_response = HuggingFaceGeneratorWrapper.call(prompt=prompts,
+                                                        generator=self.generator,
+                                                        max_tokens=max_tokens, 
+                                                        # stop_token=stop_token,
+                                                        temperature=temperature)
+            
+            returned_responses = []
+            for completion in HuggingFaceGeneratorWrapper.get_first_response_batched(response=batched_response):
+                returned_responses.append(completion)
+            
+            return returned_responses
+            
     
 class LLamaCppHelper:
     def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600, n_ctx: int=512):

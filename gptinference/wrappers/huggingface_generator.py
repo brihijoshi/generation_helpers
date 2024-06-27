@@ -30,11 +30,16 @@ class HuggingFaceGeneratorWrapper:
 
         print("..........................................................", do_sample)
 
+        # This can actually handle the batched input on its own!!
+
         response = generator(prompt,
                             max_new_tokens=max_tokens,
                             temperature=temperature,
                             return_full_text=False,
                             do_sample=do_sample) 
+        
+
+        # breakpoint()
 
         return response
 
@@ -47,3 +52,19 @@ class HuggingFaceGeneratorWrapper:
         # else:
         #     text = response["choices"][0]["text"]
         return text
+    
+    @staticmethod
+    def get_first_response_batched(response) -> List[Dict[str, Any]]:
+        """Returns the first response from the list of responses."""
+
+        # breakpoint()
+
+        for r in response:
+            yield r[0]['generated_text']
+
+        # if is_chat_based_agent(engine):
+        #     for r in response["choices"]:
+        #         yield r.message.content
+        # else:
+        #     for r in response["choices"]:
+        #         yield r["text"]
