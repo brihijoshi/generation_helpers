@@ -147,11 +147,11 @@ class OpenaiAPIWrapper:
     def get_first_response_batched(response, engine) -> List[Dict[str, Any]]:
         """Returns the first response from the list of responses."""
         if is_chat_based_agent(engine):
-            for r in response["choices"]:
+            for r in response.choices:
                 yield r.message.content
         else:
-            for r in response["choices"]:
-                yield r["text"]
+            for r in response.choices:
+                yield r.text
 
     # @staticmethod
     # def get_all_responses(response, engine) -> Dict[str, Any]:
