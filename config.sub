@@ -1,0 +1,9 @@
+#!/bin/bash
+#SBATCH -J llama3.1_persona                  # Job name
+#SBATCH -o test_file_%j.out                  # output file (%j expands to jobID)
+#SBATCH -e test_file_%j.err                  # error log file (%j expands to jobID)
+#SBATCH -t 1-10                              # Time limit (hh:mm:ss)
+#SBATCH --gres=gpu:a6000:2                   # Type/number of GPUs needed
+
+conda activate persona
+python test_helpers.py

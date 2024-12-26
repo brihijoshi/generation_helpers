@@ -1,7 +1,7 @@
 # from gptinference.helper import LLamaCppHelper
 from gptinference.helper import HuggingFaceGeneratorHelper
 
-helper = HuggingFaceGeneratorHelper(model="/home/shared/Llama3-8B-Instruct", cache_path='cache.jsonl', device='cuda:0')
+helper = HuggingFaceGeneratorHelper(model="/home/shared/Meta-Llama-3.1-70B-Instruct", cache_path='cache.jsonl', device='cuda:0')
 
 # helper = LLamaCppHelper(repo_id="Qwen/Qwen2-0.5B-Instruct-GGUF",filename="*q8_0.gguf",cache_path="cache.jsonl")
 
