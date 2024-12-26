@@ -31,7 +31,7 @@ def cost_in_dollars(num_input_tokens: int, num_output_tokens: int, engine: str) 
 class HuggingFaceGeneratorHelper:
     def __init__(self, model, cache_path:str=None, save_every_n_seconds: int=600, device: str="cpu"):
         self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
-        self.generator = pipeline(model=model, device=device)
+        self.generator = pipeline("text-generation", model=model, device=device)
         self.model_name = model
             
     def call(self, prompt, engine=None, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
