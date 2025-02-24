@@ -6,7 +6,7 @@ from gptinference.wrappers.huggingface_generator import HuggingFaceGeneratorWrap
 from gptinference.utils import newline, shorten
 from gptinference.caching import Caching, OpenAICacheKey, OpenAICacheValue
 from transformers import pipeline
-from llama_cpp import Llama
+# from llama_cpp import Llama
 from typing import Dict
 
 def cost_in_dollars(num_input_tokens: int, num_output_tokens: int, engine: str) -> float:
