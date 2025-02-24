@@ -11,7 +11,6 @@ setup(name='callgpt',
     # # packages=find_packages(include=["gptinference", "gptinference.wrappers", "gptinference.base"]),
     install_requires=[
         'openai==1.12.0',
-        'llama-cpp-python'
     ],
     license='Apache License 2.0',
     long_description=open('README.md').read(),
