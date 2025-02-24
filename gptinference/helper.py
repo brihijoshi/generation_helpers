@@ -1,7 +1,7 @@
 from typing import List
 
 from gptinference.wrappers.openai_api_generator import OpenaiAPIWrapper
-from gptinference.wrappers.llama_cpp_generator import LlamaCppWrapper
+# from gptinference.wrappers.llama_cpp_generator import LlamaCppWrapper
 from gptinference.wrappers.huggingface_generator import HuggingFaceGeneratorWrapper
 from gptinference.utils import newline, shorten
 from gptinference.caching import Caching, OpenAICacheKey, OpenAICacheValue
@@ -122,63 +122,63 @@ class HuggingFaceGeneratorHelper:
             return returned_responses
             
     
-class LLamaCppHelper:
-    def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600, n_ctx: int=512):
-        self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
-        self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True,n_ctx=n_ctx,n_gpu_layers=20)
-        self.repo_id = repo_id
+# class LLamaCppHelper:
+#     def __init__(self, repo_id, filename, cache_path:str=None, save_every_n_seconds: int=600, n_ctx: int=512):
+#         self.cache = Caching(cache_path=cache_path, save_every_n_seconds=save_every_n_seconds)
+#         self.model = Llama.from_pretrained(repo_id=repo_id,filename=filename,verbose=True,logits_all=True,n_ctx=n_ctx,n_gpu_layers=20)
+#         self.repo_id = repo_id
             
-    def call(self, prompt, engine, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
-        if not prompt:
-            return ""
-        cache_key = OpenAICacheKey(engine=self.repo_id,
-                                    prompt=str(prompt).lstrip(), # don't store new lines in the beginning.
-                                    stop_token=stop_token,
-                                    temperature=temperature,
-                                    max_tokens=max_tokens)
-        cache_val = self.cache.get(key=cache_key)
-        if not cache_val:
-            val_dict = LlamaCppWrapper.call(prompt=prompt,
-                                                engine=self.model,
-                                                max_tokens=max_tokens,
-                                                # stop_token=stop_token,
-                                                temperature=temperature,
-                                                logprobs=logprobs)
-            cache_val = self.cache.set(key=cache_key, value=OpenAICacheValue(
-                first_response=str(LlamaCppWrapper.get_first_response(response=val_dict))
-            ))
+#     def call(self, prompt, engine, max_tokens=300, stop_token=None, temperature=0.0, logprobs=False):
+#         if not prompt:
+#             return ""
+#         cache_key = OpenAICacheKey(engine=self.repo_id,
+#                                     prompt=str(prompt).lstrip(), # don't store new lines in the beginning.
+#                                     stop_token=stop_token,
+#                                     temperature=temperature,
+#                                     max_tokens=max_tokens)
+#         cache_val = self.cache.get(key=cache_key)
+#         if not cache_val:
+#             val_dict = LlamaCppWrapper.call(prompt=prompt,
+#                                                 engine=self.model,
+#                                                 max_tokens=max_tokens,
+#                                                 # stop_token=stop_token,
+#                                                 temperature=temperature,
+#                                                 logprobs=logprobs)
+#             cache_val = self.cache.set(key=cache_key, value=OpenAICacheValue(
+#                 first_response=str(LlamaCppWrapper.get_first_response(response=val_dict))
+#             ))
 
-        return cache_val.first_response
+#         return cache_val.first_response
 
-    def mk_cache_key(self, prompt: str, engine: str, max_tokens=300, stop_token="###", temperature=0.0) -> str:
-        cache_key = OpenAICacheKey(engine=engine,
-                                prompt=prompt.lstrip(), # don't store new lines in the beginning.
-                                stop_token=stop_token,
-                                temperature=temperature,
-                                max_tokens=max_tokens)
-        return cache_key
+#     def mk_cache_key(self, prompt: str, engine: str, max_tokens=300, stop_token="###", temperature=0.0) -> str:
+#         cache_key = OpenAICacheKey(engine=engine,
+#                                 prompt=prompt.lstrip(), # don't store new lines in the beginning.
+#                                 stop_token=stop_token,
+#                                 temperature=temperature,
+#                                 max_tokens=max_tokens)
+#         return cache_key
 
 
-    def call_batch(self, prompts: List[str], engine: str, max_tokens=300, stop_token="###", temperature=0.0):
-        cache_keys = [self.mk_cache_key(prompt=prompt, engine=engine, stop_token=stop_token, temperature=temperature, max_tokens=max_tokens)  for prompt in prompts]
-        precached_entries = {prompt: self.cache.get(key=cache_key) for cache_key, prompt in zip(cache_keys, prompts)}
-        uncached_prompts   = [prompt for prompt, cached_entry in precached_entries.items() if not cached_entry]
+#     def call_batch(self, prompts: List[str], engine: str, max_tokens=300, stop_token="###", temperature=0.0):
+#         cache_keys = [self.mk_cache_key(prompt=prompt, engine=engine, stop_token=stop_token, temperature=temperature, max_tokens=max_tokens)  for prompt in prompts]
+#         precached_entries = {prompt: self.cache.get(key=cache_key) for cache_key, prompt in zip(cache_keys, prompts)}
+#         uncached_prompts   = [prompt for prompt, cached_entry in precached_entries.items() if not cached_entry]
 
-        # print(f"\nCalling GPT3 as a batch for ({len(uncached_prompts)}/ {len(precached_entries)}) "
-        #       f"prompts: {(newline+newline).join([shorten(p, max_words=10)+ '...' for p in uncached_prompts])}")
+#         # print(f"\nCalling GPT3 as a batch for ({len(uncached_prompts)}/ {len(precached_entries)}) "
+#         #       f"prompts: {(newline+newline).join([shorten(p, max_words=10)+ '...' for p in uncached_prompts])}")
 
-        batched_response = LlamaCppWrapper.call(prompt=uncached_prompts,
-                                                    engine=engine,
-                                                    max_tokens=max_tokens, stop_token=stop_token,
-                                                    temperature=temperature)
+#         batched_response = LlamaCppWrapper.call(prompt=uncached_prompts,
+#                                                     engine=engine,
+#                                                     max_tokens=max_tokens, stop_token=stop_token,
+#                                                     temperature=temperature)
 
-        for prompt, completion in zip(uncached_prompts, LlamaCppWrapper.get_first_response_batched(response=batched_response, engine=engine)):
-            value = OpenAICacheValue(first_response= completion.strip())
-            precached_entries[prompt] = value
-            cache_key = self.mk_cache_key(prompt=prompt, engine=engine, stop_token=stop_token, temperature=temperature, max_tokens=max_tokens)
-            self.cache.set(key=cache_key, value=value)
+#         for prompt, completion in zip(uncached_prompts, LlamaCppWrapper.get_first_response_batched(response=batched_response, engine=engine)):
+#             value = OpenAICacheValue(first_response= completion.strip())
+#             precached_entries[prompt] = value
+#             cache_key = self.mk_cache_key(prompt=prompt, engine=engine, stop_token=stop_token, temperature=temperature, max_tokens=max_tokens)
+#             self.cache.set(key=cache_key, value=value)
 
-        return [p.first_response for _, p in precached_entries.items()]
+#         return [p.first_response for _, p in precached_entries.items()]
 
 
 class OpenAIHelper:
